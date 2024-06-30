@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Clo!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Garamond&display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #ffe6f2;
+            background-image: url('https://www.transparenttextures.com/patterns/roses.png');
+            font-family: 'Garamond', serif;
+            margin: 0;
+        }
+        .cake {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background-color: #ff99cc;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .cake::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 220px;
+            height: 50px;
+            background-color: #ff66b2;
+            border-radius: 10px 10px 0 0;
+        }
+        .candle {
+            position: absolute;
+            top: -30px;
+            width: 10px;
+            height: 50px;
+            background-color: #ff6347;
+            border-radius: 5px;
+        }
+        .candle .flame {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 20px;
+            background-color: #ffeb3b;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(255, 235, 59, 0.8);
+        }
+        .greeting {
+            font-size: 32px;
+            color: #333;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .sub-greeting {
+            font-size: 24px;
+            color: #555;
+            text-align: center;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="cake">
+        <div class="candle" style="left: 10px;"><div class="flame"></div></div>
+        <div class="candle" style="left: 40px;"><div class="flame"></div></div>
+        <div class="candle" style="left: 70px;"><div class="flame"></div></div>
+        <div class="candle" style="left: 100px;"><div class="flame"></div></div>
+        <div class="candle" style="left: 130px;"><div class="flame"></div></div>
+        <div class="candle" style="left: 160px;"><div class="flame"></div></div>
+        <div class="candle" style="left: 190px;"><div class="flame"></div></div>
+        <div class="candle" style="left: 220px;"><div class="flame"></div></div>
+        <div class="candle" style="left: 250px;"><div class="flame"></div></div>
+        <div class="candle" style="left: 280px;"><div class="flame"></div></div>
+    </div>
+    <div class="greeting">Happy Birthday Clo!</div>
+    <div class="sub-greeting">You deserve good things in life because you are one of it. Long live, stink!</div>
+
+    <script>
+        async function setupMicrophone() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+
+                const source = audioContext.createMediaStreamSource(stream);
+                source.connect(analyser);
+
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                function checkVolume() {
+                    analyser.getByteFrequencyData(dataArray);
+                    const volume = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+
+                    if (volume > 100) {
+                        document.querySelectorAll('.flame').forEach(flame => flame.style.display = 'none');
+                    }
+
+                    requestAnimationFrame(checkVolume);
+                }
+
+                checkVolume();
+            } catch (err) {
+                console.error('Error accessing microphone:', err);
+            }
+        }
+
+        setupMicrophone();
+    </script>
+</body>
+</html>
